@@ -1,0 +1,88 @@
+{
+  "name": "mealdb",
+  "version": "1.0",
+  "description": "Search for recipes by meal name, ingredient, category, or cuisine area. Returns full cooking instructions, ingredient lists, images, and video links from TheMealDB.",
+  "documentation": "Searches TheMealDB for recipes and returns meal titles, categories, cuisine areas, full cooking instructions, ingredient lists with measurements, images, source URLs, and YouTube video links. Use when the user asks about recipes, cooking, meal ideas, or ingredients. Common triggers: 'recipe for...', 'how to cook...', 'how to make...', 'what can I make with...', 'dinner ideas', 'something with chicken', 'Italian recipes', 'vegetarian meals', 'dessert ideas'. Supports four search modes: by meal name (default), by main ingredient, by category (Beef, Chicken, Seafood, Vegetarian, Dessert, etc.), or by cuisine area (Italian, Mexican, Japanese, Chinese, American, British, French, Indian, etc.). For broad exploration, use category or area filters. For specific dishes, search by name. For pantry-based cooking, search by ingredient.",
+  "category": "lifestyle",
+  "icon": "fa-utensils",
+  "trigger": {
+    "type": "on_demand",
+    "description": "Initiated by Chalie when recipe or cooking information is needed"
+  },
+
+  "parameters": {
+    "query": {
+      "type": "string",
+      "required": true,
+      "description": "Meal name to search for (e.g., 'pasta carbonara', 'chicken tikka', 'chocolate cake')"
+    },
+    "limit": {
+      "type": "integer",
+      "required": false,
+      "default": 5,
+      "description": "Number of recipes to return (1-8). Capped at 8 to avoid cognitive overload."
+    },
+    "ingredient": {
+      "type": "string",
+      "required": false,
+      "description": "Search by main ingredient instead of name (e.g., 'chicken', 'salmon', 'rice'). When provided, query is ignored for search but kept for context."
+    },
+    "category": {
+      "type": "string",
+      "required": false,
+      "description": "Filter by meal category: Beef, Chicken, Dessert, Lamb, Miscellaneous, Pasta, Pork, Seafood, Side, Starter, Vegan, Vegetarian, Breakfast, Goat"
+    },
+    "area": {
+      "type": "string",
+      "required": false,
+      "description": "Filter by cuisine area: American, British, Canadian, Chinese, Croatian, Dutch, Egyptian, Filipino, French, Greek, Indian, Irish, Italian, Jamaican, Japanese, Kenyan, Malaysian, Mexican, Moroccan, Polish, Portuguese, Russian, Spanish, Thai, Tunisian, Turkish, Vietnamese"
+    }
+  },
+
+  "returns": {
+    "results": {
+      "type": "array",
+      "description": "List of {title, category, area, instructions, ingredients[], image_url, url, tags[], youtube_url}"
+    },
+    "count": {
+      "type": "integer",
+      "description": "Number of recipes returned"
+    },
+    "query": {
+      "type": "string",
+      "description": "The search query used"
+    },
+    "_meta": {
+      "type": "object",
+      "description": "Observability metadata: fetch_latency_ms, result_count, search_mode"
+    }
+  },
+
+  "constraints": {
+    "timeout_seconds": 10
+  },
+
+  "config_schema": {},
+
+  "tips": [
+    "Use query for specific dish names — 'arrabiata', 'pad thai', 'tiramisu'",
+    "Use ingredient param to find recipes using a specific ingredient — ingredient='chicken_breast'",
+    "Use category param for broad browsing — category='Vegetarian', category='Dessert'",
+    "Use area param for cuisine exploration — area='Japanese', area='Mexican'",
+    "Only one search mode is used per request: ingredient > category > area > query (priority order)",
+    "Filter endpoints (ingredient, category, area) return less detail initially — full details are fetched automatically",
+    "Pair with memorize to save favorite recipes as facts",
+    "Use list skill to help users build shopping lists from ingredients"
+  ],
+
+  "output": {
+    "synthesize": true,
+    "card": {
+      "enabled": true,
+      "mode": "immediate",
+      "title": "Recipes",
+      "accent_color": "#FF6B35",
+      "background_color": "rgba(255,107,53,0.06)"
+    }
+  }
+}
