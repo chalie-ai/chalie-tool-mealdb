@@ -169,13 +169,26 @@ def _enrich_meals(meals: list) -> list:
                 result = future.result(timeout=3)
                 if result:
                     enriched.append(result)
+                else:
+                    # Lookup returned empty — use partial data from filter
+                    fallback = futures[future]
+                    enriched.append({
+                        "idMeal": fallback.get("idMeal", ""),
+                        "strMeal": fallback.get("strMeal", ""),
+                        "strMealThumb": fallback.get("strMealThumb", ""),
+                    })
             except Exception as e:
-                # Fall back to minimal data from filter
+                # Lookup failed — use partial data from filter
                 fallback = futures[future]
                 logger.debug(
                     '{"event":"mealdb_lookup_failed","id":"%s","error":"%s"}',
                     fallback.get("idMeal", ""), str(e)[:80],
                 )
+                enriched.append({
+                    "idMeal": fallback.get("idMeal", ""),
+                    "strMeal": fallback.get("strMeal", ""),
+                    "strMealThumb": fallback.get("strMealThumb", ""),
+                })
 
     return enriched
 
